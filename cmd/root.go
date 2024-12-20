@@ -53,10 +53,18 @@ func checkVersion() {
 	}
 
 	if currentVersion < latestVersion {
-		fmt.Printf("Your version (%s) is out of date. Please run 'dg upgrade' to update to the latest version (%s).\n", currentVersion, latestVersion)
+		fmt.Printf("Your version (%s) is out of date. Would you like to upgrade to the latest version (%s)? (yes/no): ", currentVersion, latestVersion)
+		var response string
+		fmt.Scanln(&response)
+		if response == "yes" {
+			runUpdate(latestVersion)
+		} else {
+			fmt.Println(style.LightGray.Render(fmt.Sprintf("\nCurrent Version: %s", currentVersion)))
+			fmt.Println(style.Red.Render("\nYou are out of date!"))
+		}
 	} else {
 		fmt.Println(style.LightGray.Render(fmt.Sprintf("\nCurrent Version: %s", currentVersion)))
-		fmt.Println(style.Dg.Render(fmt.Sprintf("\nYou are up to date!")))
+		fmt.Println(style.Dg.Render("\nYou are up to date!"))
 	}
 }
 
