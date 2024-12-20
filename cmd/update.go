@@ -12,7 +12,6 @@ import (
 )
 
 var (
-	version   = "v0.1.0"
 	updateCmd *cobra.Command
 )
 

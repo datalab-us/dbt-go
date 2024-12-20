@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"dg/style"
+	"dg/version"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -14,7 +17,7 @@ var rootCmd = &cobra.Command{
 	Long:  style.Dg.Render("dg is a cli written in GO to help improve the DX of Analytics Engineers using dbt"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if cmd.Flag("version").Changed {
-			fmt.Printf("Current Version: %s\n", version)
+			checkVersion()
 			return nil
 		}
 		cmd.Help()
@@ -39,6 +42,39 @@ func init() {
 	}
 
 	rootCmd.AddCommand(updateCmd)
+}
+
+func checkVersion() {
+	currentVersion := version.Version
+	latestVersion, err := getLatestVersion()
+	if err != nil {
+		fmt.Printf("Error checking latest version: %v\n", err)
+		return
+	}
+
+	if currentVersion < latestVersion {
+		fmt.Printf("Your version (%s) is out of date. Please run 'dg upgrade' to update to the latest version (%s).\n", currentVersion, latestVersion)
+	} else {
+		fmt.Println(style.LightGray.Render(fmt.Sprintf("\nCurrent Version: %s", currentVersion)))
+		fmt.Println(style.Dg.Render(fmt.Sprintf("\nYou are up to date!")))
+	}
+}
+
+func getLatestVersion() (string, error) {
+	resp, err := http.Get("https://api.github.com/repos/cognite-analytics/dbt-go/releases/latest")
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	var release struct {
+		TagName string `json:"tag_name"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
+		return "", err
+	}
+
+	return release.TagName, nil
 }
 
 func Execute() {
