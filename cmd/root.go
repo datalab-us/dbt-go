@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings" // Add this import
 
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,10 @@ var rootCmd = &cobra.Command{
 			checkVersion()
 			return nil
 		}
+		if cmd.Flag("info").Changed {
+			runInfo(cmd, args)
+			return nil
+		}
 		cmd.Help()
 		return nil
 	},
@@ -27,6 +32,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentFlags().BoolP("version", "v", false, "Print the version number of the CLI tool")
+	rootCmd.PersistentFlags().BoolP("info", "i", false, "Show Additional Developer Information About dbt-go")
 
 	updateCmd = &cobra.Command{
 		Use:   "update [version]",
@@ -91,4 +97,46 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func runInfo(cmd *cobra.Command, args []string) error {
+	asciiArt := `
+--------------------------
+--------------------------
+--------*@@*--------------
+------===+@#----===-------
+---=#@@@@%@#--+%@@@%%@%=--
+--=@@*==+%@#-+@%===#@@=---
+--+@*:--:+@*:%@=:-:-@%----
+--=%@*++*@@%++@@*++%@%----
+---=*%@@%#%%#-=#%%%#@@----
+----------------=+=*@#----
+---------------#@@@%*-----
+--------------------------
+--------------------------
+`
+	copyright := "Copyright © 2024"
+	contact := "Matthew Skinner -- matthew@skinnerdev.com"
+	github := "github.com/cognite-analytics/dbt-go"
+	width := 80
+
+	centeredCopyright := style.CenterText(copyright, width)
+	centeredContact := style.CenterText(contact, width)
+	centeredLink := style.CenterText(github, width)
+	lines := strings.Split(asciiArt, "\n")
+	centeredLines := make([]string, len(lines))
+	for i, line := range lines {
+		centeredLines[i] = style.CenterText(line, width)
+	}
+
+	centeredAsciiArt := strings.Join(centeredLines, "\n")
+	styledAsciiArt := style.Dg.Render(centeredAsciiArt)
+
+	fmt.Printf(`%s
+
+%s
+%s
+%s
+`, styledAsciiArt, centeredCopyright, centeredContact, centeredLink)
+	return nil
 }
