@@ -31,3 +31,10 @@ install:
 	fi
 	@echo "Installation successful."
 	@echo "Ensure you run '$(PROGRAM_NAME)' from the root of your dbt project."
+
+release:
+	@echo "Releasing $(PROGRAM_NAME)..."
+	@version=$(shell grep 'Version =' ./version/version.go | awk '{print $$NF}' | tr -d '"') && \
+	git tag -a $$version -m "Release $$version" && \
+	git push origin main --follow-tags
+	@echo "Release successful."
