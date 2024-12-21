@@ -15,6 +15,8 @@ builds:
       - CGO_ENABLED=0
     ldflags:
       - -s -w -X github.com/cognite-analytics/dbt-go/version.version={{.Version}}
+    artifacts:
+      - name_template: "dg_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 
 release:
   prerelease: auto
