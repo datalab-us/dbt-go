@@ -6,6 +6,7 @@ require (
 	github.com/TheZoraiz/ascii-image-converter v1.13.1
 	github.com/charmbracelet/bubbletea v1.2.4
 	github.com/charmbracelet/lipgloss v1.0.0
+	github.com/hashicorp/go-getter v1.7.6
 	github.com/spf13/cobra v1.8.1
 )
 
@@ -31,7 +32,6 @@ require (
 	github.com/googleapis/gax-go/v2 v2.6.0 // indirect
 	github.com/gookit/color v1.4.2 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter v1.7.6 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

@@ -2,7 +2,7 @@ before:
   hooks:
     - go mod tidy
 builds:
-  - binary: dbt-go
+  - binary: dg
     main: ./
     goos:
       - darwin
