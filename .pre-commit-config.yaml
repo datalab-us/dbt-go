@@ -12,3 +12,4 @@ repos:
     hooks:
       - id: go-fmt
       - id: go-vet
+      - id: go-mod-tidy

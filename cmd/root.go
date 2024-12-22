@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"regexp"
 	"strings" // Add this import
 
 	"github.com/spf13/cobra"
@@ -99,6 +100,22 @@ func Execute() {
 	}
 }
 
+var ansiRegex = regexp.MustCompile(`\x1b\[[0-9;]*m`)
+
+func stripANSI(str string) string {
+	return ansiRegex.ReplaceAllString(str, "")
+}
+
+func centerText(text string, width int) string {
+	stripped := stripANSI(text)
+	if len(stripped) >= width {
+		return text
+	}
+	spaces := width - len(stripped)
+	left := spaces / 2
+	return strings.Repeat(" ", left) + text
+}
+
 func runInfo(cmd *cobra.Command, args []string) error {
 	asciiArt := `
 --------------------------
@@ -120,13 +137,13 @@ func runInfo(cmd *cobra.Command, args []string) error {
 	github := "github.com/cognite-analytics/dbt-go"
 	width := 80
 
-	centeredCopyright := style.CenterText(copyright, width)
-	centeredContact := style.CenterText(contact, width)
-	centeredLink := style.CenterText(github, width)
+	centeredCopyright := centerText(copyright, width)
+	centeredContact := centerText(contact, width)
+	centeredLink := centerText(github, width)
 	lines := strings.Split(asciiArt, "\n")
 	centeredLines := make([]string, len(lines))
 	for i, line := range lines {
-		centeredLines[i] = style.CenterText(line, width)
+		centeredLines[i] = centerText(line, width)
 	}
 
 	centeredAsciiArt := strings.Join(centeredLines, "\n")
